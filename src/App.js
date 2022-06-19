@@ -7,6 +7,12 @@ function App() {
     const [cardMap, setCardMap] = useState(new Map())
     const [prompt, setPrompt] = useState("Click button to start!")
 
+    function clean(str) {
+        const tagsRegex = /<[0-9A-Za-z/\\]*>/ig
+        const specialCharsRegex = /&[0-9A-Za-z/\\]*;/ig
+        return str.replaceAll(tagsRegex, '').replaceAll(specialCharsRegex, '')
+    }
+
     async function initCardMap() {
         await fetch(cards)
             .then(r => r.text())
@@ -19,7 +25,7 @@ function App() {
 
                 lines.forEach(line => {
                     var columns = line.split('\t')
-                    cards.set(parseInt(columns[PROMPT_ID]), columns[PROMPT_TEXT])
+                    cards.set(parseInt(columns[PROMPT_ID]), clean(columns[PROMPT_TEXT]))
                 })
 
                 setCardMap(cards)
